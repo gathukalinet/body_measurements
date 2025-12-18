@@ -20,10 +20,10 @@ with st.form("measurements_form"):
 
     # We use 'value=' to set a safe default, and 'key=' to bypass the browser's memory
     weight = st.number_input("Weight (kg)", min_value=30.0, max_value=200.0, value=70.0, key="w_v2")
-    height = st.number_input("Height (cm)", min_value=120.0, max_value=220.0, value=165.0, key="h_v2")
-    waist = st.number_input("Waist circumference (cm)", min_value=50.0, max_value=150.0, value=75.0, key="waist_v2")
-    hip = st.number_input("Hip circumference (cm)", min_value=60.0, max_value=180.0, value=95.0, key="hip_v2")
-    skirt_length = st.number_input("Preferred skirt length (cm)", min_value=30.0, max_value=120.0, value=50.0, key="len_v2")
+    height = st.number_input("Height (inches)", min_value=47.0, max_value=87.0, value=65.0, key="h_v2")
+    waist = st.number_input("Waist circumference (inches)", min_value=20.0, max_value=60.0, value=30.0, key="waist_v2")
+    hip = st.number_input("Hip circumference (inches)", min_value=24.0, max_value=70.0, value=38.0, key="hip_v2")
+    skirt_length = st.number_input("Preferred skirt length (inches)", min_value=12.0, max_value=48.0, value=20.0, key="len_v2")
 
     submitted = st.form_submit_button("Generate Pattern ✂️")
 
