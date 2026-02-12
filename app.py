@@ -1,21 +1,52 @@
-# app.py
 import streamlit as st
+import tempfile
+# Ensure these functions exist in your skirt_pattern.py file
 from skirt_pattern import draw_circle_skirt_pattern, export_pattern_pdf
 
-st.title("Circle Skirt Pattern Generator")
+st.set_page_config(
+    page_title="Circle Skirt Pattern Generator",
+    layout="centered",
+)
 
-waist = st.number_input("Waist (cm)", 50.0, 150.0)
-length = st.number_input("Length (cm)", 30.0, 120.0)
+st.title("🪡 Circle Skirt Pattern Generator")
 
-if st.button("Generate pattern"):
-    fig = draw_circle_skirt_pattern(waist, length)
+with st.form("measurements_form"):
+    skirt_type = st.selectbox(
+        "Skirt type",
+        ["full", "half", "quarter"],
+        format_func=lambda x: x.capitalize() + " Circle",
+        key="skirt_type_v2"
+    )
+
+    # We use 'value=' to set a safe default, and 'key=' to bypass the browser's memory
+    weight = st.number_input("Weight (kg)", min_value=30.0, max_value=200.0, value=70.0, key="w_v2")
+    height = st.number_input("Height (inches)", min_value=47.0, max_value=87.0, value=65.0, key="h_v2")
+    waist = st.number_input("Waist circumference (inches)", min_value=20.0, max_value=60.0, value=30.0, key="waist_v2")
+    hip = st.number_input("Hip circumference (inches)", min_value=24.0, max_value=70.0, value=38.0, key="hip_v2")
+    skirt_length = st.number_input("Preferred skirt length (inches)", min_value=12.0, max_value=48.0, value=20.0, key="len_v2")
+
+    submitted = st.form_submit_button("Generate Pattern ✂️")
+
+if submitted and "fig" not in st.session_state:
+    st.info("Creating your pattern...")
+    fig = draw_circle_skirt_pattern(
+        waist_cm=waist,
+        hip_cm=hip,
+        height_cm=height,
+        weight_kg=weight,
+        skirt_length_cm=skirt_length,
+        circle_type=skirt_type,
+    )
+    
+    fig = st.session_state.fig
     st.pyplot(fig)
 
-    export_pattern_pdf(fig)
-    with open("skirt_pattern.pdf", "rb") as f:
-        st.download_button(
-            "Download PDF",
-            f,
-            file_name="skirt_pattern.pdf",
-            mime="application/pdf",
-        )
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
+        export_pattern_pdf(fig, tmp.name)
+        with open(tmp.name, "rb") as pdf_file:
+            st.download_button(
+                label="📄 Download PDF Pattern",
+                data=pdf_file,
+                file_name=f"{skirt_type}_skirt.pdf",
+                mime="application/pdf",
+            )
