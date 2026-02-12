@@ -78,3 +78,4 @@ def draw_circle_skirt_pattern(waist_cm, hip_cm, height_cm, weight_kg, skirt_leng
 def export_pattern_pdf(fig, filename):
     with PdfPages(filename) as pdf:
         pdf.savefig(fig, bbox_inches='tight')
+    plt.close(fig)
